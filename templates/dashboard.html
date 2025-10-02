@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Moniepoint Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Top Navbar -->
+  <nav class="bg-white shadow px-6 py-3">
+    <div class="flex justify-between items-center">
+      <!-- Left: Profile + User Info -->
+      <div class="flex items-center space-x-4">
+        <a href="{{ url_for('profile') }}">
+          <img src="{{ url_for('static', filename=current_user.profile_pic if current_user.profile_pic else 'images/logo.png') }}" 
+               alt="Profile" 
+               class="w-12 h-12 rounded-full border-2 border-green-700 object-cover">
+        </a>
+        <div>
+          <p class="font-semibold text-gray-700">{{ username or current_user.username or 'User' }}</p>
+          <p class="text-sm text-gray-500">KYC Level: {{ kyc_level if kyc_level else 'Lvl1' }}</p>
+          <div class="flex space-x-3 mt-2">
+            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Spend</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">Save</span>
+            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">Borrow</span>
+            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">Invest</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Desktop Nav Links -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="{{ url_for('transactions_page') }}" class="text-green-700 font-semibold hover:underline">Transactions</a>
+        <a href="{{ url_for('profile') }}" class="text-green-700 font-semibold hover:underline">Profile</a>
+        <a href="{{ url_for('logout') }}" class="text-red-600 font-semibold hover:underline">Logout</a>
+        <button class="relative">
+          <img src="{{ url_for('static', filename='images/OIP.webp') }}" alt="Notifications" class="w-3 h-3">
+          <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <img src="{{ url_for('static', filename='images/wifi.webp') }}" alt="WiFi" class="w-3 h-3">
+      </div>
+
+      <!-- Mobile Toggle -->
+      <button id="mobileToggle" class="md:hidden text-green-700 focus:outline-none">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+
+      <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden flex-col space-y-3 mt-3 md:hidden">
+      <a href="{{ url_for('transactions_page') }}" class="block text-green-700 font-semibold">Transactions</a>
+      <a href="{{ url_for('profile') }}" class="block text-green-700 font-semibold">Profile</a>
+      <a href="{{ url_for('logout') }}" class="block text-red-600 font-semibold">Logout</a>
+      <!-- Notifications & WiFi Icons for Mobile -->
+      <div class="flex items-center space-x-4 mt-2">
+        <button class="relative">
+          <img src="{{ url_for('static', filename='images/OIP.webp') }}" alt="Notifications" class="w-6 h-6">
+          <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <img src="{{ url_for('static', filename='images/wifi.webp') }}" alt="WiFi" class="w-6 h-6">
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="p-6 space-y-6 flex-grow pb-32">
+    <!-- Account Card -->
+    <div class="bg-green-700 text-white p-6 rounded-lg shadow flex flex-col sm:flex-row justify-between items-start sm:items-center">
+      <div class="flex flex-col space-y-2">
+        <div class="flex items-center space-x-2">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-5 h-5">
+          <h2 class="text-xl font-bold">{{ username or current_user.username or 'User' }}</h2>
+        </div>
+        <div class="flex items-center space-x-2">
+          <p class="text-sm">Account Number: {{ account_number }}</p>
+          <div class="relative">
+            <button onclick="toggleDropdown()" class="text-sm px-2 py-1 bg-green-600 rounded">▼</button>
+            <div id="accountDropdown" class="hidden absolute mt-2 bg-white text-gray-800 rounded shadow p-3 w-60">
+              <p><strong>Name:</strong> {{ username or current_user.username or 'User' }}</p>
+              <p><strong>Account Number:</strong> {{ account_number }}</p>
+              <p><strong>Balance:</strong> ${{ metrics.total_balance if metrics else 0 }}</p>
+            </div>
+          </div>
+          <button onclick="copyAccountNumber()" class="px-2 py-1 bg-green-900 rounded text-white text-sm">Copy</button>
+        </div>
+      </div>
+      <div class="mt-4 sm:mt-0 text-right flex flex-col items-end">
+        <p class="text-sm">Available Balance</p>
+        <p id="balanceAmount" class="text-2xl font-bold">${{ metrics.total_balance if metrics else 0 }}</p>
+        <button id="toggleBalanceBtn" class="mt-2 px-3 py-1 bg-green-800 text-white rounded text-sm">
+          
+        </button>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-around mt-4">
+      <a href="{{ url_for('transfer') }}" class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition">Transfer</a>
+      <a href="{{ url_for('add_money') }}" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition">Add Money</a>
+    </div>
+
+    <!-- Transaction History Card -->
+    <div class="bg-white p-6 rounded-lg shadow flex justify-between items-center mt-6">
+      <p class="font-semibold text-gray-700">Transaction History</p>
+      <a href="{{ url_for('transactions_page') }}" class="text-green-700 font-bold hover:underline">View All</a>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div id="recentTransactions" class="space-y-4">
+      {% for txn in transactions %}
+      <div class="bg-white p-4 rounded shadow flex justify-between items-center">
+        <div>
+          <p class="font-semibold">{{ txn.txn_type }}</p>
+          <p class="text-sm text-gray-500">{{ txn.date.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+        <p class="font-bold text-gray-700">${{ txn.amount }}</p>
+      </div>
+      {% else %}
+      <p class="text-gray-500 text-center">No recent transactions</p>
+      {% endfor %}
+    </div>
+
+<!-- Service Items -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6">
+  <!-- Betting -->
+  <a href="{{ url_for('betting') }}" class="service-tile bg-white p-6 rounded-2xl shadow-lg text-center flex flex-col items-center 
+     hover:bg-green-700 hover:text-white hover:scale-105 hover:-translate-y-1 
+     hover:shadow-2xl transition duration-300 ease-in-out relative overflow-hidden">
+    <i class="fas fa-dice text-green-700 text-2xl mb-2"></i>
+     <img src="{{ url_for('static', filename='images/bet9ja.jpeg') }}" alt="Bet9ja" class="w-16 h-16 mb-4 object-contain bg-white rounded-full p-2 shadow-md">
+    <p class="font-semibold">Betting</p>
+  </a>
+
+  <!-- Internet -->
+ <a href="{{ url_for('internet') }}" 
+   class="service-tile bg-white p-6 rounded-2xl shadow-lg text-center flex flex-col items-center 
+          hover:bg-green-700 hover:text-white hover:scale-105 hover:-translate-y-1 
+          hover:shadow-2xl transition duration-300 ease-in-out relative overflow-hidden">
+    <i class="fas fa-wifi text-green-700 text-2xl mb-2"></i>
+     <img src="{{ url_for('static', filename='images/airtel.jpeg') }}" alt="Airtime" class="w-16 h-16 mb-4 object-contain bg-white rounded-full p-2 shadow-md">
+    <p class="font-semibold">Internet</p>
+</a>
+
+<!-- Savings & Investment -->
+<a href="{{ url_for('savings') }}" 
+   class="service-tile bg-white p-6 rounded-2xl shadow-lg text-center flex flex-col items-center 
+          hover:bg-green-700 hover:text-white hover:scale-105 hover:-translate-y-1 
+          hover:shadow-2xl transition duration-300 ease-in-out relative overflow-hidden">
+  <i class="fas fa-piggy-bank text-green-700 text-2xl mb-2"></i>
+  <p class="font-semibold">Savings & Investment</p>
+</a>
+
+  <!-- Airtime -->
+  <!-- Airtime -->
+<a href="{{ url_for('airtime') }}" 
+   class="bg-red-500 text-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl flex flex-col items-center">
+  <img src="{{ url_for('static', filename='images/airtel.jpeg') }}" alt="Airtime" class="w-16 h-16 mb-4 object-contain bg-white rounded-full p-2 shadow-md">
+  <h3 class="text-lg font-semibold mb-2">Buy Airtime</h3>
+  <p class="text-sm opacity-90 text-center">Top-up instantly for MTN, GLO, Airtel & Etisalat.</p>
+</a>
+
+
+  <!-- Education -->
+  <a href="{{ url_for('education') }}" 
+   class="service-tile bg-white p-6 rounded-2xl shadow-lg text-center flex flex-col items-center 
+          hover:bg-blue-700 hover:text-white hover:scale-105 hover:-translate-y-1 
+          hover:shadow-2xl transition duration-300 ease-in-out relative overflow-hidden">
+  <i class="fas fa-graduation-cap text-blue-700 text-2xl mb-2"></i>
+  <p class="font-semibold">Education</p>
+</a>
+
+
+  <!-- Bill Payment -->
+  <a href="{{ url_for('bills') }}" 
+   class="service-tile bg-white p-6 rounded-2xl shadow-lg text-center flex flex-col items-center 
+          hover:bg-indigo-700 hover:text-white hover:scale-105 hover:-translate-y-1 
+          hover:shadow-2xl transition duration-300 ease-in-out relative overflow-hidden">
+  <i class="fas fa-file-invoice text-indigo-700 text-2xl mb-2"></i>
+  <p class="font-semibold">Bill Payment</p>
+</a>
+</div>
+
+<!-- Ripple Effect Styles -->
+<style>
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 600ms linear;
+    background-color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+  }
+
+  @keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+</style>
+
+<!-- Sound + Ripple Script -->
+<script>
+  // Preload sound
+  const clickSound = new Audio("{{ url_for('static', filename='sounds/click.mp3') }}");
+
+  document.querySelectorAll('.service-tile').forEach(tile => {
+    tile.addEventListener('click', function (e) {
+      // Ripple effect
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      const rect = this.getBoundingClientRect();
+      ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
+      ripple.style.left = e.clientX - rect.left - (ripple.offsetWidth / 2) + 'px';
+      ripple.style.top = e.clientY - rect.top - (ripple.offsetHeight / 2) + 'px';
+
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+
+      // Play sound
+      clickSound.currentTime = 0; // reset if clicked multiple times
+      clickSound.play().catch(err => console.log("Sound blocked by browser:", err));
+    });
+  });
+</script>
+
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+      <div class="bg-green-700 text-white p-6 rounded-lg shadow hover:scale-105 transition transform">
+        <p class="text-gray-200">Customers</p>
+        <p class="text-2xl font-bold mt-2">{{ metrics.customers_count if metrics else 0 }}</p>
+      </div>
+      <div class="bg-green-600 text-white p-6 rounded-lg shadow hover:scale-105 transition transform">
+        <p class="text-gray-200">Transactions</p>
+        <p class="text-2xl font-bold mt-2">{{ metrics.transactions_count if metrics else 0 }}</p>
+      </div>
+      <div class="bg-green-500 text-white p-6 rounded-lg shadow hover:scale-105 transition transform">
+        <p class="text-gray-200">Loans</p>
+        <p class="text-2xl font-bold mt-2">${{ metrics.loans_total if metrics else 0 }}</p>
+      </div>
+      <div class="bg-black text-white p-6 rounded-lg shadow hover:scale-105 transition transform">
+        <p class="text-gray-200">Savings</p>
+        <p class="text-2xl font-bold mt-2">${{ metrics.savings_total if metrics else 0 }}</p>
+      </div>
+    </div>
+
+    <!-- Latest News & Ads -->
+    <div class="mt-6">
+      <h3 class="font-bold text-lg mb-3">Latest News & Ads</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <p class="font-semibold text-gray-700">🎉 Special Promo!</p>
+          <p class="text-sm text-gray-500">Deposit now and get 5% cashback.</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <p class="font-semibold text-gray-700">📢 Update</p>
+          <p class="text-sm text-gray-500">Our new loan features are live now.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Nav -->
+  <footer class="bg-white shadow px-6 py-3 flex justify-around items-center fixed bottom-0 w-full">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-green-700 font-semibold">
+      <i class="fas fa-home text-lg"></i>
+      <span class="text-sm">Home</span>
+    </a>
+    <a href="{{ url_for('transfer') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fas fa-paper-plane text-lg"></i>
+      <span class="text-sm">Send</span>
+    </a>
+    <a href="{{ url_for('transactions_page') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fas fa-credit-card text-lg"></i>
+      <span class="text-sm">Pay</span>
+    </a>
+    <a href="{{ url_for('cards') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fas fa-id-card text-lg"></i>
+      <span class="text-sm">Cards</span>
+    </a>
+    <a href="{{ url_for('more') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fas fa-bars text-lg"></i>
+      <span class="text-sm">More</span>
+    </a>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    function copyAccountNumber() {
+      navigator.clipboard.writeText('{{ account_number }}').then(() => {
+        alert('Account number copied!');
+      });
+    }
+
+    // Balance toggle
+    let balanceVisible = true;
+    document.getElementById("toggleBalanceBtn").addEventListener("click", function() {
+      const balanceEl = document.getElementById("balanceAmount");
+      balanceVisible = !balanceVisible;
+      balanceEl.textContent = balanceVisible ? '${{ metrics.total_balance if metrics else 0 }}' : '****';
+    });
+
+    // Mobile nav toggle
+    document.getElementById("mobileToggle").addEventListener("click", function () {
+      const menu = document.getElementById("mobileMenu");
+      menu.classList.toggle("hidden");
+    });
+  </script>
+
+</body>
+</html>

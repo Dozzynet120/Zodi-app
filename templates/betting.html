@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Fund Betting Account{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-100 to-gray-200 overflow-y-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Fund Your Betting Account
+  </h2>
+
+  <!-- Betting Companies Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% set companies = [
+      "Bet9ja", "NairaBet", "SportyBet", "BetKing", 
+      "1xBet Nigeria", "MerryBet", "SureBet247", 
+      "NaijaBet", "MSport", "BetPawa"
+    ] %}
+    
+    {% for company in companies %}
+    <div class="bg-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ company }}</h3>
+      <p class="text-sm text-gray-600 mb-4">Fund your {{ company }} wallet easily from here.</p>
+      <button 
+        onclick="openFundForm('{{ company }}')" 
+        class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+        Fund Account
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal for Funding -->
+<div id="fundModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
+    <h3 id="modalCompanyName" class="text-xl font-bold text-gray-800 mb-4"></h3>
+
+    <form class="space-y-4">
+      <div>
+        <label class="block text-gray-700 mb-1">Betting Account ID / Username</label>
+        <input type="text" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Amount (₦)</label>
+        <input type="number" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Payment Method</label>
+        <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+          <option>Bank Transfer</option>
+          <option>Debit Card</option>
+          <option>Wallet Balance</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+        Proceed
+      </button>
+    </form>
+
+    <!-- Close button -->
+    <button onclick="closeFundForm()" class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  function openFundForm(company) {
+    document.getElementById('modalCompanyName').textContent = "Fund " + company + " Account";
+    document.getElementById('fundModal').classList.remove('hidden');
+  }
+  function closeFundForm() {
+    document.getElementById('fundModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

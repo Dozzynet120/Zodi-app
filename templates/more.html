@@ -1,0 +1,100 @@
+<!-- templates/more.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>More - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- Header -->
+  <header class="bg-green-700 text-white p-4 flex items-center justify-between">
+    <h1 class="text-lg font-semibold">More</h1>
+    <a href="{{ url_for('dashboard') }}" class="text-sm hover:underline">Back</a>
+  </header>
+
+  <!-- Menu List -->
+  <div class="p-4 space-y-4">
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-file-alt text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Statement & Report</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-credit-card text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Saved Cards</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-headset text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Get Help</span>
+    </a>
+
+    <a href="{{ url_for('security') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-lock text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Security</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-gift text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Cashback</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-paint-brush text-green-700 text-xl w-8"></i>
+      <span class="ml-3">App Themes</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-users text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Referrals</span>
+    </a>
+
+    <a href="#" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-circle-question text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Zodi Premium FAQs</span>
+    </a>
+
+    <a href="{{ url_for('account_limits') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-chart-line text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Account Limits</span>
+    </a>
+
+    <a href="{{ url_for('legal') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50">
+      <i class="fa fa-balance-scale text-green-700 text-xl w-8"></i>
+      <span class="ml-3">Legal</span>
+    </a>
+
+    <a href="{{ url_for('logout') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:bg-gray-50 text-red-600">
+      <i class="fa fa-sign-out-alt text-red-600 text-xl w-8"></i>
+      <span class="ml-3">Sign Out</span>
+    </a>
+
+  </div>
+
+  <!-- Footer Navigation -->
+  <footer class="fixed bottom-0 w-full bg-white shadow p-2 flex justify-around">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fa fa-home"></i>
+      <span class="text-xs">Home</span>
+    </a>
+    <a href="{{ url_for('transactions') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fa fa-exchange-alt"></i>
+      <span class="text-xs">Transactions</span>
+    </a>
+    <a href="{{ url_for('profile') }}" class="flex flex-col items-center text-gray-600 hover:text-green-700">
+      <i class="fa fa-user"></i>
+      <span class="text-xs">Profile</span>
+    </a>
+    <a href="{{ url_for('more') }}" class="flex flex-col items-center text-green-700">
+      <i class="fa fa-ellipsis-h"></i>
+      <span class="text-xs">More</span>
+    </a>
+  </footer>
+
+</body>
+</html>

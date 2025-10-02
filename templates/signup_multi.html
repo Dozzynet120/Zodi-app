@@ -1,0 +1,86 @@
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash
+from models import User, db  # your SQLAlchemy models
+import os
+
+app = Flask(__name__)
+app.secret_key = "your_secret_key"
+
+# Folder for uploads
+UPLOAD_FOLDER = "static/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    # Determine which page/step we are on
+    page = int(request.form.get("page", 1))
+    # Get existing session data
+    data = session.get("signup_data", {})
+
+    if request.method == "POST":
+        # Save form fields to session
+        for key, value in request.form.items():
+            if key != "page":
+                data[key] = value
+
+        # Step 3: handle file uploads
+        if page == 3:
+            files = request.files
+            id_file = files.get("id_upload")
+            utility_file = files.get("utility_upload")
+            selfie_file = files.get("selfie_upload")
+
+            # Validate file uploads
+            if not all([id_file, utility_file, selfie_file]):
+                flash("Please upload all files!")
+                return redirect(url_for("signup"))
+
+            # Secure filenames and save
+            id_filename = secure_filename(id_file.filename)
+            utility_filename = secure_filename(utility_file.filename)
+            selfie_filename = secure_filename(selfie_file.filename)
+
+            id_file.save(os.path.join(app.config["UPLOAD_FOLDER"], id_filename))
+            utility_file.save(os.path.join(app.config["UPLOAD_FOLDER"], utility_filename))
+            selfie_file.save(os.path.join(app.config["UPLOAD_FOLDER"], selfie_filename))
+
+            # Hash password for security
+            hashed_password = generate_password_hash(data["password"])
+
+            # Create new user
+            new_user = User(
+                username=data["username"],
+                email=data["email"],
+                password=hashed_password,
+                emergency_contact1=data["phone1"],
+                emergency_contact2=data["phone2"],
+                residential_address=data["address"],
+                state_residence=data["state_residence"],
+                lga_residence=data["lga_residence"],
+                state_origin=data["state_origin"],
+                lga_origin=data["lga_origin"],
+                employment_status=data["employment_status"],
+                marital_status=data["marital_status"],
+                id_doc=id_filename,
+                utility_docs=utility_filename,
+                profile_pic=selfie_filename
+            )
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            # Clear session data
+            session.pop("signup_data", None)
+
+            # Redirect to dashboard
+            return redirect(url_for("dashboard"))
+
+        else:
+            # Move to next step
+            page += 1
+            session["signup_data"] = data
+
+    return render_template("signup.html", page=page, data=data)

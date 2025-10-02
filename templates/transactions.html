@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transactions | Moniepoint Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow flex justify-between items-center px-6 py-3">
+    <h1 class="text-xl font-bold text-green-700">Transactions</h1>
+    <div class="flex items-center space-x-4">
+      <a href="{{ url_for('dashboard') }}" class="text-green-700 font-semibold">Dashboard</a>
+      <a href="{{ url_for('logout') }}" class="text-red-600 font-semibold">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Transactions List -->
+  <div class="p-6 max-w-4xl mx-auto">
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-lg font-bold mb-4">Recent Transactions</h2>
+
+      <div class="space-y-4">
+        {% for txn in transactions %}
+        <div class="flex justify-between items-center border-b pb-2">
+          <div>
+            <p class="font-semibold">{{ txn.type }}</p>
+            <p class="text-sm text-gray-500">{{ txn.date }}</p>
+          </div>
+          <p class="font-bold {% if txn.type == 'Withdrawal' %}text-red-600{% else %}text-green-600{% endif %}">
+            ${{ txn.amount }}
+          </p>
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center">No transactions found</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Buy Airtime{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-100 to-gray-200 overflow-y-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Buy Airtime
+  </h2>
+
+  <!-- Service Providers Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% set providers = [
+      {"name": "MTN", "color": "bg-yellow-400", "logo": url_for('static', filename='images/mtn.jpeg')},
+      {"name": "GLO", "color": "bg-green-600", "logo": url_for('static', filename='images/glo.jpeg')},
+      {"name": "AIRTEL", "color": "bg-red-600", "logo": url_for('static', filename='images/airtel.jpeg')},
+      {"name": "ETISALAT", "color": "bg-green-900", "logo": url_for('static', filename='images/etisalat.jpeg')}
+    ] %}
+    
+    {% for provider in providers %}
+    <div class="{{ provider.color }} rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp text-white flex flex-col items-center">
+      <!-- Logo -->
+      <img src="{{ provider.logo }}" alt="{{ provider.name }} Logo" class="w-16 h-16 mb-4 object-contain bg-white rounded-full p-2 shadow-md">
+      
+      <h3 class="text-lg font-semibold mb-2">{{ provider.name }}</h3>
+      <p class="text-sm opacity-90 mb-4 text-center">Recharge {{ provider.name }} airtime instantly.</p>
+      
+      <button 
+        onclick="openAirtimeForm('{{ provider.name }}', '{{ provider.color }}', '{{ provider.logo }}')" 
+        class="w-full py-2 px-4 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-200 transition">
+        Buy Airtime
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal for Buying Airtime -->
+<div id="airtimeModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl w-full max-w-md relative overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div id="airtimeModalHeader" class="flex items-center justify-center p-4">
+      <img id="airtimeProviderLogo" src="" alt="Provider Logo" class="w-16 h-16 bg-white rounded-full p-2 shadow-md">
+    </div>
+
+    <div class="p-6">
+      <h3 id="airtimeProviderName" class="text-xl font-bold text-gray-800 mb-4 text-center"></h3>
+
+      <form class="space-y-4">
+        <!-- Phone Number -->
+        <div>
+          <label class="block text-gray-700 mb-1">Phone Number</label>
+          <input type="text" placeholder="Enter your phone number" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Airtime Amount -->
+        <div>
+          <label class="block text-gray-700 mb-1">Airtime Amount (₦)</label>
+          <input type="number" placeholder="Enter amount e.g. 500" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Payment Method -->
+        <div>
+          <label class="block text-gray-700 mb-1">Payment Method</label>
+          <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <option>Bank Transfer</option>
+            <option>Debit Card</option>
+            <option>Wallet Balance</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Proceed
+        </button>
+      </form>
+    </div>
+
+    <!-- Close button -->
+    <button onclick="closeAirtimeForm()" class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  function openAirtimeForm(provider, colorClass, logoUrl) {
+    // Update provider name
+    document.getElementById('airtimeProviderName').textContent = "Buy " + provider + " Airtime";
+
+    // Update header color + logo
+    const header = document.getElementById('airtimeModalHeader');
+    header.className = colorClass + " flex items-center justify-center p-4";
+    document.getElementById('airtimeProviderLogo').src = logoUrl;
+
+    // Show modal
+    document.getElementById('airtimeModal').classList.remove('hidden');
+  }
+
+  function closeAirtimeForm() {
+    document.getElementById('airtimeModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Buy Internet Data{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-100 to-gray-200 overflow-y-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Buy Internet Data
+  </h2>
+
+  <!-- Service Providers Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% set providers = [
+      {"name": "MTN", "color": "bg-yellow-400", "logo": url_for('static', filename='images/mtn.jpeg')},
+      {"name": "GLO", "color": "bg-green-600", "logo": url_for('static', filename='images/glo.jpeg')},
+      {"name": "AIRTEL", "color": "bg-red-600", "logo": url_for('static', filename='images/airtel.jpeg')},
+      {"name": "ETISALAT", "color": "bg-green-900", "logo": url_for('static', filename='images/etisalat.jpeg')}
+    ] %}
+    
+    {% for provider in providers %}
+    <div class="{{ provider.color }} rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp text-white flex flex-col items-center">
+      <!-- Logo -->
+      <img src="{{ provider.logo }}" alt="{{ provider.name }} Logo" class="w-16 h-16 mb-4 object-contain bg-white rounded-full p-2 shadow-md">
+      
+      <h3 class="text-lg font-semibold mb-2">{{ provider.name }}</h3>
+      <p class="text-sm opacity-90 mb-4 text-center">Purchase {{ provider.name }} data bundles instantly.</p>
+      
+      <button 
+        onclick="openDataForm('{{ provider.name }}', '{{ provider.color }}', '{{ provider.logo }}')" 
+        class="w-full py-2 px-4 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-200 transition">
+        Buy Data
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal for Buying Data -->
+<div id="dataModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl w-full max-w-md relative overflow-hidden">
+    
+    <!-- Modal Header (Dynamic color + logo) -->
+    <div id="modalHeader" class="flex items-center justify-center p-4">
+      <img id="modalProviderLogo" src="" alt="Provider Logo" class="w-16 h-16 bg-white rounded-full p-2 shadow-md">
+    </div>
+
+    <div class="p-6">
+      <h3 id="modalProviderName" class="text-xl font-bold text-gray-800 mb-4 text-center"></h3>
+
+      <form class="space-y-4">
+        <!-- Phone Number -->
+        <div>
+          <label class="block text-gray-700 mb-1">Phone Number</label>
+          <input type="text" placeholder="Enter your phone number" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Data Bundle -->
+        <div>
+          <label class="block text-gray-700 mb-1">Select Data Bundle</label>
+          <select id="dataBundles" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <!-- Bundles load dynamically -->
+          </select>
+        </div>
+
+        <!-- Payment Method -->
+        <div>
+          <label class="block text-gray-700 mb-1">Payment Method</label>
+          <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <option>Bank Transfer</option>
+            <option>Debit Card</option>
+            <option>Wallet Balance</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Proceed
+        </button>
+      </form>
+    </div>
+
+    <!-- Close button -->
+    <button onclick="closeDataForm()" class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  // Data bundles with sizes + prices per provider
+  const bundles = {
+    "MTN": ["100MB – ₦200", "500MB – ₦500", "1GB – ₦800", "2GB – ₦1500", "5GB – ₦3500"],
+    "GLO": ["200MB – ₦200", "1GB – ₦600", "2.5GB – ₦1200", "5GB – ₦2500", "10GB – ₦4000"],
+    "AIRTEL": ["150MB – ₦200", "750MB – ₦500", "1.5GB – ₦1000", "3GB – ₦2000", "6GB – ₦3500"],
+    "ETISALAT": ["100MB – ₦250", "500MB – ₦700", "1.5GB – ₦1200", "3GB – ₦2500", "6GB – ₦4500"]
+  };
+
+  function openDataForm(provider, colorClass, logoUrl) {
+    // Update provider name
+    document.getElementById('modalProviderName').textContent = "Buy " + provider + " Data";
+    
+    // Update bundles
+    const select = document.getElementById('dataBundles');
+    select.innerHTML = "";
+    bundles[provider].forEach(bundle => {
+      let option = document.createElement("option");
+      option.text = bundle;
+      select.add(option);
+    });
+
+    // Update header color + logo
+    const header = document.getElementById('modalHeader');
+    header.className = colorClass + " flex items-center justify-center p-4";
+    document.getElementById('modalProviderLogo').src = logoUrl;
+
+    // Show modal
+    document.getElementById('dataModal').classList.remove('hidden');
+  }
+
+  function closeDataForm() {
+    document.getElementById('dataModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

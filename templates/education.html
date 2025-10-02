@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Education Payments{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-100 to-gray-200 overflow-y-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Pay University Fees
+  </h2>
+
+  <!-- Universities Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% set universities = [
+      {"name": "University of Lagos (UNILAG)", "logo": url_for('static', filename='images/unilag.jpeg')},
+      {"name": "University of Ibadan (UI)", "logo": url_for('static', filename='images/ui.jpeg')},
+      {"name": "Ahmadu Bello University (ABU)", "logo": url_for('static', filename='images/abu.jpeg')},
+      {"name": "Obafemi Awolowo University (OAU)", "logo": url_for('static', filename='images/oau.jpeg')},
+      {"name": "University of Nigeria, Nsukka (UNN)", "logo": url_for('static', filename='images/unn.jpeg')},
+      {"name": "Covenant University", "logo": url_for('static', filename='images/cu.jpeg')}
+    ] %}
+
+    {% for uni in universities %}
+    <div class="bg-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp flex flex-col items-center">
+      <!-- Logo -->
+      <img src="{{ uni.logo }}" alt="{{ uni.name }} Logo" class="w-16 h-16 mb-4 object-contain rounded-full p-2 shadow-md bg-gray-100">
+      
+      <h3 class="text-lg font-semibold text-gray-900 mb-2 text-center">{{ uni.name }}</h3>
+      <p class="text-sm text-gray-600 mb-4 text-center">Pay school-related fees for {{ uni.name }}.</p>
+      
+      <button 
+        onclick="openEducationForm('{{ uni.name }}', '{{ uni.logo }}')" 
+        class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+        Pay Fees
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal for Education Payments -->
+<div id="eduModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl w-full max-w-md relative overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div id="modalHeader" class="flex items-center justify-center p-4 bg-blue-600">
+      <img id="modalUniLogo" src="" alt="University Logo" class="w-16 h-16 bg-white rounded-full p-2 shadow-md">
+    </div>
+
+    <div class="p-6">
+      <h3 id="modalUniName" class="text-xl font-bold text-gray-800 mb-4 text-center"></h3>
+
+      <form class="space-y-4">
+        <!-- Matric Number -->
+        <div>
+          <label class="block text-gray-700 mb-1">Matric / Application Number</label>
+          <input type="text" placeholder="Enter student matric number" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Fee Type -->
+        <div>
+          <label class="block text-gray-700 mb-1">Select Fee Type</label>
+          <select id="feeType" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <option>School Fees</option>
+            <option>Acceptance Fee</option>
+            <option>Graduation Fee</option>
+            <option>Development Levy</option>
+          </select>
+        </div>
+
+        <!-- Amount -->
+        <div>
+          <label class="block text-gray-700 mb-1">Amount (₦)</label>
+          <input type="number" placeholder="Enter amount" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Payment Method -->
+        <div>
+          <label class="block text-gray-700 mb-1">Payment Method</label>
+          <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <option>Bank Transfer</option>
+            <option>Debit Card</option>
+            <option>Wallet Balance</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Proceed
+        </button>
+      </form>
+    </div>
+
+    <!-- Close button -->
+    <button onclick="closeEducationForm()" class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  function openEducationForm(uniName, uniLogo) {
+    document.getElementById('modalUniName').textContent = "Pay Fees for " + uniName;
+    document.getElementById('modalUniLogo').src = uniLogo;
+    document.getElementById('eduModal').classList.remove('hidden');
+  }
+
+  function closeEducationForm() {
+    document.getElementById('eduModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

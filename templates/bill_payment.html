@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Bill Payment{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-100 to-gray-200 overflow-y-auto">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Pay Your Bills
+  </h2>
+
+  <!-- Bill Categories Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% set categories = [
+      {"name": "Utility Bills", "icon": "fas fa-bolt", "color": "bg-yellow-500"},
+      {"name": "TV Subscription", "icon": "fas fa-tv", "color": "bg-blue-600"},
+      {"name": "Other Bills", "icon": "fas fa-file-invoice", "color": "bg-green-600"}
+    ] %}
+
+    {% for cat in categories %}
+    <div class="{{ cat.color }} rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp text-white flex flex-col items-center">
+      <i class="{{ cat.icon }} text-3xl mb-3"></i>
+      <h3 class="text-lg font-semibold mb-2">{{ cat.name }}</h3>
+      <p class="text-sm opacity-90 mb-4 text-center">Pay your {{ cat.name | lower }} easily.</p>
+      
+      <button 
+        onclick="openBillForm('{{ cat.name }}')" 
+        class="w-full py-2 px-4 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-200 transition">
+        Pay Now
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal for Bill Payments -->
+<div id="billModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl w-full max-w-md relative overflow-hidden">
+    
+    <div id="modalHeader" class="flex items-center justify-center p-4 bg-indigo-600">
+      <i id="modalBillIcon" class="fas fa-file-invoice text-3xl text-white"></i>
+    </div>
+
+    <div class="p-6">
+      <h3 id="modalBillName" class="text-xl font-bold text-gray-800 mb-4 text-center"></h3>
+
+      <form class="space-y-4">
+        <!-- Customer ID -->
+        <div>
+          <label class="block text-gray-700 mb-1">Customer ID / Decoder Number / Meter Number</label>
+          <input type="text" placeholder="Enter ID / Number" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Bill Type -->
+        <div>
+          <label class="block text-gray-700 mb-1">Select Bill Type</label>
+          <select id="billType" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <!-- Loads dynamically -->
+          </select>
+        </div>
+
+        <!-- Amount -->
+        <div>
+          <label class="block text-gray-700 mb-1">Amount (₦)</label>
+          <input type="number" placeholder="Enter amount" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <!-- Payment Method -->
+        <div>
+          <label class="block text-gray-700 mb-1">Payment Method</label>
+          <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <option>Bank Transfer</option>
+            <option>Debit Card</option>
+            <option>Wallet Balance</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Proceed
+        </button>
+      </form>
+    </div>
+
+    <!-- Close button -->
+    <button onclick="closeBillForm()" class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  // Bill options by category
+  const billOptions = {
+    "Utility Bills": ["EKEDC", "AEDC", "IKEDC", "KEDCO", "JED", "PHED", "IBEDC"],
+    "TV Subscription": ["DSTV", "GOTV", "StarTimes"],
+    "Other Bills": ["WAEC Fee", "JAMB Fee", "State Levies"]
+  };
+
+  function openBillForm(category) {
+    document.getElementById('modalBillName').textContent = "Pay " + category;
+    document.getElementById('modalBillIcon').className = 
+      (category === "Utility Bills" ? "fas fa-bolt text-3xl text-white" :
+      category === "TV Subscription" ? "fas fa-tv text-3xl text-white" : 
+      "fas fa-file-invoice text-3xl text-white");
+
+    // Load options
+    const select = document.getElementById('billType');
+    select.innerHTML = "";
+    billOptions[category].forEach(option => {
+      let opt = document.createElement("option");
+      opt.text = option;
+      select.add(opt);
+    });
+
+    document.getElementById('billModal').classList.remove('hidden');
+  }
+
+  function closeBillForm() {
+    document.getElementById('billModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animation Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

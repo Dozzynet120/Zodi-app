@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Savings & Investment{% endblock %}
+
+{% block content %}
+<div class="flex-1 p-6 bg-gradient-to-br from-gray-50 to-gray-200 overflow-y-auto">
+
+  <!-- Header -->
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center animate__animated animate__fadeInDown">
+    Savings & Investment
+  </h2>
+
+  <!-- Savings Section -->
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">💰 Savings Vault</h3>
+    <p class="text-gray-600 mb-4">
+      Lock away your money securely and earn interest. Withdraw only when maturity is reached.
+    </p>
+
+    <form class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Amount -->
+      <div>
+        <label class="block text-gray-700 mb-1">Amount (₦)</label>
+        <input type="number" placeholder="Enter amount" 
+               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+      </div>
+
+      <!-- Duration -->
+      <div>
+        <label class="block text-gray-700 mb-1">Duration</label>
+        <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+          <option>1 Month – 3% Interest</option>
+          <option>3 Months – 10% Interest</option>
+          <option>6 Months – 25% Interest</option>
+        </select>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex items-end">
+        <button type="submit" 
+                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Save Now
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Investment Section -->
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">📈 Investment Plans</h3>
+    <p class="text-gray-600 mb-6">
+      Choose an investment plan to grow your money with different risks and returns.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Low Risk -->
+      <div class="border rounded-xl p-4 hover:shadow-lg transition flex flex-col">
+        <h4 class="text-lg font-semibold text-blue-600 mb-2">Low Risk</h4>
+        <p class="text-gray-600 flex-grow">Earn up to 5% yearly. Safe & stable option.</p>
+        <button onclick="openInvestModal('Low Risk', '5% per year')" 
+                class="mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+          Invest
+        </button>
+      </div>
+
+      <!-- Medium Risk -->
+      <div class="border rounded-xl p-4 hover:shadow-lg transition flex flex-col">
+        <h4 class="text-lg font-semibold text-yellow-600 mb-2">Medium Risk</h4>
+        <p class="text-gray-600 flex-grow">Earn up to 15% yearly. Balanced growth.</p>
+        <button onclick="openInvestModal('Medium Risk', '15% per year')" 
+                class="mt-4 bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">
+          Invest
+        </button>
+      </div>
+
+      <!-- High Risk -->
+      <div class="border rounded-xl p-4 hover:shadow-lg transition flex flex-col">
+        <h4 class="text-lg font-semibold text-red-600 mb-2">High Risk</h4>
+        <p class="text-gray-600 flex-grow">Earn up to 30% yearly. High growth potential.</p>
+        <button onclick="openInvestModal('High Risk', '30% per year')" 
+                class="mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+          Invest
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings & Investment History -->
+  <div class="bg-white rounded-xl shadow-lg p-6 animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">📜 Savings & Investment History</h3>
+    <table class="w-full border border-gray-200 rounded-lg overflow-hidden">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-3 text-left text-gray-700">Date</th>
+          <th class="p-3 text-left text-gray-700">Type</th>
+          <th class="p-3 text-left text-gray-700">Amount</th>
+          <th class="p-3 text-left text-gray-700">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t">
+          <td class="p-3">2025-09-10</td>
+          <td class="p-3">Savings – 3 Months</td>
+          <td class="p-3">₦50,000</td>
+          <td class="p-3 text-green-600">Active</td>
+        </tr>
+        <tr class="border-t">
+          <td class="p-3">2025-07-01</td>
+          <td class="p-3">Investment – Medium Risk</td>
+          <td class="p-3">₦100,000</td>
+          <td class="p-3 text-yellow-600">Pending</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Investment Modal -->
+<div id="investModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
+    <h3 id="investPlanName" class="text-xl font-bold text-gray-800 mb-4 text-center"></h3>
+    <p id="investPlanDetails" class="text-center text-gray-600 mb-4"></p>
+
+    <form class="space-y-4">
+      <!-- Amount -->
+      <div>
+        <label class="block text-gray-700 mb-1">Investment Amount (₦)</label>
+        <input type="number" placeholder="Enter amount" 
+               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+      </div>
+
+      <!-- Payment Method -->
+      <div>
+        <label class="block text-gray-700 mb-1">Payment Method</label>
+        <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+          <option>Bank Transfer</option>
+          <option>Debit Card</option>
+          <option>Wallet Balance</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+        Proceed
+      </button>
+    </form>
+
+    <!-- Close button -->
+    <button onclick="closeInvestModal()" 
+            class="absolute top-3 right-3 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+      ✕
+    </button>
+  </div>
+</div>
+
+<script>
+  function openInvestModal(plan, details) {
+    document.getElementById('investPlanName').textContent = plan + " Investment";
+    document.getElementById('investPlanDetails').textContent = "Expected return: " + details;
+    document.getElementById('investModal').classList.remove('hidden');
+  }
+
+  function closeInvestModal() {
+    document.getElementById('investModal').classList.add('hidden');
+  }
+</script>
+
+<!-- Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

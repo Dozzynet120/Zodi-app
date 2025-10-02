@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Transfer Money</h2>
+  <form method="POST">
+    <div class="form-group mb-3">
+      <label for="target_account">Recipient Account Number</label>
+      <input type="text" class="form-control" id="target_account" name="target_account" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="amount">Amount</label>
+      <input type="number" class="form-control" id="amount" name="amount" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Transfer</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

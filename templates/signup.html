@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup | Zodi App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hidden { display: none; }
+    #video, #canvas {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-3xl font-bold mb-2 text-center text-green-700">Create an Account</h1>
+    <p class="text-center text-gray-600 mb-6">Join Zodi App and take control of your finances</p>
+
+    <!-- Toggle buttons -->
+    <div class="flex space-x-4 mb-6">
+      <button type="button" id="userBtn" class="flex-1 py-2 bg-green-700 text-white rounded font-semibold">User</button>
+      <button type="button" id="merchantBtn" class="flex-1 py-2 bg-gray-300 rounded font-semibold">Merchant</button>
+    </div>
+
+    <!-- User Form -->
+    <form id="userForm" class="space-y-4" method="POST" action="{{ url_for('signup') }}">
+      <input type="hidden" name="account_type" value="user">
+      
+      <p class="text-gray-700 font-medium">User Registration</p>
+      <p class="text-gray-500 mb-4">Create your personal Zodi App account</p>
+
+      <input type="text" name="first_name" placeholder="First Name" class="w-full p-3 border rounded" required>
+      <input type="text" name="last_name" placeholder="Last Name" class="w-full p-3 border rounded" required>
+      <input type="email" name="email" placeholder="Email Address" class="w-full p-3 border rounded" required>
+      <input type="tel" name="phone" placeholder="+234" class="w-full p-3 border rounded" required>
+      <input type="date" name="dob" class="w-full p-3 border rounded" required>
+      <input type="text" name="bvn" placeholder="BVN" class="w-full p-3 border rounded" required>
+      
+      <input type="password" name="password" placeholder="Password" 
+             class="w-full p-3 border rounded" 
+             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}" 
+             title="Password must include uppercase, lowercase, number, and special character" required>
+      <input type="password" name="confirm_password" placeholder="Confirm Password" 
+             class="w-full p-3 border rounded" required>
+
+      <!-- Selfie Capture -->
+      <div>
+        <label class="text-gray-700 font-medium">Take a Selfie</label>
+        <video id="video" autoplay playsinline class="border"></video>
+        <canvas id="canvas" class="hidden border"></canvas>
+        <input type="hidden" id="selfieInput" name="selfie">
+        <div class="flex space-x-2 mt-2">
+          <button type="button" id="startCamera" class="flex-1 py-2 bg-gray-300 rounded">Start Camera</button>
+          <button type="button" id="capture" class="flex-1 py-2 bg-green-700 text-white rounded hidden">Capture</button>
+        </div>
+      </div>
+
+      <div class="flex items-center">
+        <input type="checkbox" id="termsUser" name="terms" class="mr-2" required>
+        <label for="termsUser" class="text-gray-700 text-sm">I agree to the terms of service and privacy policy</label>
+      </div>
+
+      <button type="submit" class="w-full py-3 bg-green-700 text-white rounded font-semibold hover:bg-green-800 transition">Create Account</button>
+
+      <p class="text-center text-gray-500 text-sm">
+        Already have an account? 
+        <a href="{{ url_for('login') }}" class="text-green-700 font-medium">Sign in</a>
+      </p>
+    </form>
+
+    <!-- Merchant Form -->
+    <form id="merchantForm" class="space-y-4 hidden" method="POST" action="{{ url_for('signup') }}">
+      <input type="hidden" name="account_type" value="merchant">
+      
+      <p class="text-gray-700 font-medium">Merchant Registration</p>
+      <p class="text-gray-500 mb-4">Create your business Zodi App account</p>
+
+      <input type="text" name="company_name" placeholder="Company Name" class="w-full p-3 border rounded" required>
+      <input type="email" name="email" placeholder="Email Address" class="w-full p-3 border rounded" required>
+      <input type="tel" name="phone" placeholder="+234" class="w-full p-3 border rounded" required>
+      
+      <input type="password" name="password" placeholder="Password" 
+             class="w-full p-3 border rounded" 
+             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}" 
+             title="Password must include uppercase, lowercase, number, and special character" required>
+      <input type="password" name="confirm_password" placeholder="Confirm Password" 
+             class="w-full p-3 border rounded" required>
+
+      <!-- Selfie Capture for Merchant -->
+      <div>
+        <label class="text-gray-700 font-medium">Take a Selfie</label>
+        <video id="videoMerchant" autoplay playsinline class="border"></video>
+        <canvas id="canvasMerchant" class="hidden border"></canvas>
+        <input type="hidden" id="selfieInputMerchant" name="selfie">
+        <div class="flex space-x-2 mt-2">
+          <button type="button" id="startCameraMerchant" class="flex-1 py-2 bg-gray-300 rounded">Start Camera</button>
+          <button type="button" id="captureMerchant" class="flex-1 py-2 bg-green-700 text-white rounded hidden">Capture</button>
+        </div>
+      </div>
+
+      <div class="flex items-center">
+        <input type="checkbox" id="termsMerchant" name="terms" class="mr-2" required>
+        <label for="termsMerchant" class="text-gray-700 text-sm">I agree to the terms of service and privacy policy</label>
+      </div>
+
+      <button type="submit" class="w-full py-3 bg-green-700 text-white rounded font-semibold hover:bg-green-800 transition">Create Account</button>
+
+      <p class="text-center text-gray-500 text-sm">
+        Already have an account? 
+        <a href="{{ url_for('login') }}" class="text-green-700 font-medium">Sign in</a>
+      </p>
+    </form>
+
+  </div>
+
+  <script>
+    // Toggle Forms
+    const userBtn = document.getElementById('userBtn');
+    const merchantBtn = document.getElementById('merchantBtn');
+    const userForm = document.getElementById('userForm');
+    const merchantForm = document.getElementById('merchantForm');
+
+    userBtn.addEventListener('click', () => {
+      userForm.classList.remove('hidden');
+      merchantForm.classList.add('hidden');
+      userBtn.classList.add('bg-green-700', 'text-white');
+      userBtn.classList.remove('bg-gray-300');
+      merchantBtn.classList.remove('bg-green-700', 'text-white');
+      merchantBtn.classList.add('bg-gray-300');
+    });
+
+    merchantBtn.addEventListener('click', () => {
+      merchantForm.classList.remove('hidden');
+      userForm.classList.add('hidden');
+      merchantBtn.classList.add('bg-green-700', 'text-white');
+      merchantBtn.classList.remove('bg-gray-300');
+      userBtn.classList.remove('bg-green-700', 'text-white');
+      userBtn.classList.add('bg-gray-300');
+    });
+
+    // Camera Functions
+    function setupCamera(videoId, canvasId, inputId, startBtnId, captureBtnId) {
+      const video = document.getElementById(videoId);
+      const canvas = document.getElementById(canvasId);
+      const input = document.getElementById(inputId);
+      const startBtn = document.getElementById(startBtnId);
+      const captureBtn = document.getElementById(captureBtnId);
+
+      let stream;
+
+      startBtn.addEventListener('click', async () => {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        captureBtn.classList.remove('hidden');
+        startBtn.classList.add('hidden');
+      });
+
+      captureBtn.addEventListener('click', () => {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        video.classList.add('hidden');
+        canvas.classList.remove('hidden');
+        input.value = canvas.toDataURL("image/png");
+        stream.getTracks().forEach(track => track.stop());
+      });
+    }
+
+    setupCamera("video", "canvas", "selfieInput", "startCamera", "capture");
+    setupCamera("videoMerchant", "canvasMerchant", "selfieInputMerchant", "startCameraMerchant", "captureMerchant");
+  </script>
+
+</body>
+</html>
